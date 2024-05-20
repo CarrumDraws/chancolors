@@ -15,3 +15,5 @@ state is not preserved in Client Components (?)
 // }
 
 // Define params type according to your route parameters (see table below)
+
+// Store whole user state in redux. When user state changes, you need to update it in both redux and firebase auth.

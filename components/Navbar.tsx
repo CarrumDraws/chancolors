@@ -9,6 +9,13 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
+import { useAppSelector, useAppDispatch } from "../hooks/hooks";
+import {
+  increment,
+  decrement,
+  incrementByAmount,
+  selectCount,
+} from "../state/slices/userSlice";
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -20,8 +27,10 @@ import { collection, addDoc, setDoc, doc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 
 export default function Navbar() {
-  const provider = new GoogleAuthProvider();
   const [user, setUser] = useState<any>(null);
+  const provider = new GoogleAuthProvider();
+  const count = useAppSelector(selectCount);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     // Auth Object Observer (event listener- needs to be manually removed)
@@ -95,7 +104,13 @@ export default function Navbar() {
           >
             <Typography>ChanColors</Typography>
           </IconButton>
-
+          <Button onClick={() => dispatch(decrement())} color="inherit">
+            -
+          </Button>
+          {count}
+          <Button onClick={() => dispatch(increment())} color="inherit">
+            +
+          </Button>
           <Button
             onClick={() => {
               user ? signOutOfApp() : signIn();
