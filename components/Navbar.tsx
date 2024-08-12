@@ -9,31 +9,29 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-// import { useAppSelector, useAppDispatch } from "../hooks/useType";
-import useUserData from "../hooks/useUserData";
 
-import { setUser, getUser } from "../state/userSlice/user.slice";
+import { useSelector } from "react-redux";
+import { selectUser } from "../state/userSlice/user.selectors";
 import useLogin from "../hooks/useLogin";
 
 export default function Navbar() {
-  const [userData] = useUserData();
   const [signIn, signOut] = useLogin();
+
+  const userData = useSelector(selectUser);
 
   const signIntoApp = async () => {
     try {
       await signIn();
-      console.log("Signed In");
     } catch (error) {
-      console.log("Error Signing In: ", error);
+      console.log(error);
     }
   };
 
   const signOutOfApp = async () => {
     try {
       await signOut();
-      console.log("Signed Out");
     } catch (error) {
-      console.log("Error Signing Out: ", error);
+      console.log(error);
     }
   };
 
@@ -52,13 +50,11 @@ export default function Navbar() {
           </IconButton>
           <Button
             onClick={() => {
-              Object.keys(userData).length === 0
-                ? signIntoApp()
-                : signOutOfApp();
+              userData?.name ? signOutOfApp() : signIntoApp();
             }}
             color="inherit"
           >
-            {Object.keys(userData).length === 0 ? "Sign In" : "Sign Out"}
+            {userData?.name ? "Sign Out" : "Sign In"}
           </Button>
         </Toolbar>
       </AppBar>
