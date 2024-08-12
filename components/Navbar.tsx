@@ -9,86 +9,32 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
-import { useAppSelector, useAppDispatch } from "../hooks/hooks";
-import {
-  increment,
-  decrement,
-  incrementByAmount,
-  selectCount,
-} from "../state/slices/userSlice";
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-  onAuthStateChanged,
-  updateProfile,
-  signOut,
-} from "firebase/auth";
-import { collection, addDoc, setDoc, doc } from "firebase/firestore";
-import { auth, db } from "../firebase";
+// import { useAppSelector, useAppDispatch } from "../hooks/useType";
+import useUserData from "../hooks/useUserData";
+
+import { setUser, getUser } from "../state/userSlice/user.slice";
+import useLogin from "../hooks/useLogin";
 
 export default function Navbar() {
-  const [user, setUser] = useState<any>(null);
-  const provider = new GoogleAuthProvider();
-  const count = useAppSelector(selectCount);
-  const dispatch = useAppDispatch();
+  const [userData] = useUserData();
+  const [signIn, signOut] = useLogin();
 
-  useEffect(() => {
-    // Auth Object Observer (event listener- needs to be manually removed)
-    const unsubscribe = onAuthStateChanged(auth, async (currUser) => {
-      if (currUser) {
-        // user object docs: https://firebase.google.com/docs/reference/js/auth.user
-        console.log(currUser); // User is signed in
-        console.log(currUser.uid);
-        // const token = await user.getIdToken(); // identify the user to a Firebase service
-        // console.log(token);
-        setUser(currUser);
-      } else {
-        console.log("User Signed Out");
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-  const signIn = async () => {
-    signInWithPopup(auth, provider)
-      .then(async (result) => {
-        if (result !== null) {
-          // This gives you a Google Access Token. You can use it to access Google APIs.
-          const credential = GoogleAuthProvider.credentialFromResult(result);
-          const token = credential!.accessToken;
-          console.log(token);
-          console.log(result.user);
-
-          // Save result.user.uid to redux persist
-          try {
-            await setDoc(doc(db, "users", result.user.uid), {
-              name: result.user.displayName,
-              email: result.user.email,
-              image: result.user.photoURL,
-            });
-          } catch (e) {
-            console.error("Error adding document: ", e);
-          }
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const signIntoApp = async () => {
+    try {
+      await signIn();
+      console.log("Signed In");
+    } catch (error) {
+      console.log("Error Signing In: ", error);
+    }
   };
 
   const signOutOfApp = async () => {
-    signOut(auth)
-      .then(() => {
-        // Sign-out successful.
-        console.log("Signed Out");
-      })
-      .catch((error) => {
-        // An error happened.
-        console.log("Error Signing Out");
-      });
+    try {
+      await signOut();
+      console.log("Signed Out");
+    } catch (error) {
+      console.log("Error Signing Out: ", error);
+    }
   };
 
   return (
@@ -104,20 +50,15 @@ export default function Navbar() {
           >
             <Typography>ChanColors</Typography>
           </IconButton>
-          <Button onClick={() => dispatch(decrement())} color="inherit">
-            -
-          </Button>
-          {count}
-          <Button onClick={() => dispatch(increment())} color="inherit">
-            +
-          </Button>
           <Button
             onClick={() => {
-              user ? signOutOfApp() : signIn();
+              Object.keys(userData).length === 0
+                ? signIntoApp()
+                : signOutOfApp();
             }}
             color="inherit"
           >
-            {user ? "Sign Out" : "Sign In"}
+            {Object.keys(userData).length === 0 ? "Sign In" : "Sign Out"}
           </Button>
         </Toolbar>
       </AppBar>

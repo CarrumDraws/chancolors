@@ -1,19 +1,6 @@
 Can have diff .env files. .env.local, .production, .developement.
 
-next.config.js 
+Refresh your Redux knowledge
+Use Redux to access + save User data
 
-state is not preserved in Client Components (?)
-
-// export async function POST(request: Request) {}
-
-// type Params = {
-//   team: string;
-// };
-
-// export async function GET(request: Request, context: { params: Params }) {
-//   const team = context.params.team; // '1'
-// }
-
-// Define params type according to your route parameters (see table below)
-
-// Store whole user state in redux. When user state changes, you need to update it in both redux and firebase auth.
+Are custom hooks the best way to get data? Maybe it's better to use Thunks, that way theres less API reptition? But Thunks are only good for getting initial data right? Hmm, maybe a central store of user data would be good... but it doesn't persist or anything huh? So on refresh I'd need to refetch all teh data...sounds about right

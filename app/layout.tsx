@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Navbar from "../components/Navbar";
 
 import { Provider } from "react-redux";
 import { store } from "../state/store";
@@ -14,13 +13,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <Provider store={store}>
-      <html lang="en">
-        <body>
-          <Navbar />
-          {children}
-        </body>
-      </html>
-    </Provider>
+    <html lang="en">
+      <body>
+        <Provider store={store}>{children}</Provider>
+      </body>
+    </html>
   );
 }

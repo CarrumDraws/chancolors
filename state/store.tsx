@@ -1,19 +1,15 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import userReducer from "./slices/userSlice";
+import { configureStore } from "@reduxjs/toolkit";
+import userReducer from "./userSlice/user.slice";
 
 export const store = configureStore({
   reducer: {
-    counter: userReducer,
+    user: userReducer,
   },
+  devTools: true, // devTools toggle!
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
+// Export `RootState` and `AppDispatch` types
+// They are inferred from the store itself
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
->;

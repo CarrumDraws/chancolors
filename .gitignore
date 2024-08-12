@@ -5,6 +5,16 @@
 /.pnp
 .pnp.js
 
+# Next.js build output
+.next/
+out/
+
+# Next.js static files cache
+.cache/
+
+# Next.js generated static files
+public/
+
 # testing
 /coverage
 
