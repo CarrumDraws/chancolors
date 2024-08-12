@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import { collection, addDoc } from "firebase/firestore";
+import { getDoc, setDoc, doc, collection, addDoc } from "firebase/firestore";
 import { setUser } from "../state/userSlice/user.slice";
 import { selectUser } from "../state/userSlice/user.selectors";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,23 +19,39 @@ function Page(prop: Props) {
 
   // Set User Data
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      // [TRIGGER SIGN-IN THUNK IMMEDIATELY HERE]
+      // Also- sign out thunk, getSessionData thunk
+      // (Sign-in and Sign-out thunks can still be manually triggered in navbar)
+      // thunk handles entire sign-in + dispatch() process. Only the thunk can  dispatch() user data
+      // Also create a signOut() thunk
       if (user) {
-        dispatch(
-          setUser({
-            name: user.displayName || "No Name",
-            email: user.email || "No Email",
-            photo: user.photoURL || "No Photo",
-            providerId: user.providerId || "No Provider",
-            uid: user.uid || "No UID",
-          })
-        );
+        const userDocRef = doc(db, "users", user.uid); // Create a document reference
+        const userDocData = await getDoc(userDocRef); // Get the document snapshot
+        if (userDocData.exists()) {
+          let userData = userDocData.data();
+          dispatch(
+            setUser({
+              name: userData.displayName,
+              email: userData.email,
+              photo: userData.photoURL,
+              providerId: userData.providerId,
+              uid: userData.uid,
+            })
+          );
+        } else {
+          // docSnap.data() will be undefined in this case
+          console.log("No such document!");
+          dispatch(setUser(null));
+        }
       } else {
         dispatch(setUser(null));
       }
     });
     return () => unsubscribe();
   }, [dispatch]);
+
+  useEffect(() => {}, []);
 
   async function addData() {
     // Add Data to firestore

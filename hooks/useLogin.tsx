@@ -4,10 +4,13 @@ import {
   signOut as signOutOfFirebase,
 } from "firebase/auth";
 import { getDoc, setDoc, doc } from "firebase/firestore";
+import { setUser } from "../state/userSlice/user.slice";
 import { auth, db } from "../firebase";
+import { useDispatch, useSelector } from "react-redux";
 
 // Hook that Authenticates Using Google with JavaScript
 function useLogin() {
+  const dispatch = useDispatch();
   const provider = new GoogleAuthProvider();
 
   // Async function Signs In + Sets User in Redux
@@ -15,7 +18,6 @@ function useLogin() {
     try {
       const res = await signInWithPopup(auth, provider);
       if (!res) throw new Error("Error with signInWithPopup");
-      console.log(res.user);
 
       // Add User to Firestore if they don't exist
       const userDocRef = doc(db, "users", res.user.uid); // Create a document reference
@@ -30,6 +32,15 @@ function useLogin() {
           providerId: res.user.providerId,
           uid: res.user.uid,
         });
+        dispatch(
+          setUser({
+            name: res.user.displayName,
+            email: res.user.email,
+            photo: res.user.photoURL,
+            providerId: res.user.providerId,
+            uid: res.user.uid,
+          })
+        );
         console.log("New User Created");
       } else {
         console.log("User Already Exists");
