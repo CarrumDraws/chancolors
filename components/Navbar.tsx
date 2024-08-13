@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   AppBar,
   Box,
@@ -10,14 +10,14 @@ import {
   IconButton,
 } from "@mui/material";
 
-import { useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../hooks/useType";
 import { selectUser } from "../state/userSlice/user.selectors";
 import useLogin from "../hooks/useLogin";
 
 export default function Navbar() {
   const [signIn, signOut] = useLogin();
 
-  const userData = useSelector(selectUser);
+  const userData = useAppSelector(selectUser);
 
   const signIntoApp = async () => {
     try {

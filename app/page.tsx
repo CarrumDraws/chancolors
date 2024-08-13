@@ -1,22 +1,22 @@
 // Type: "tsrfce"
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Navbar from "../components/Navbar";
-import { getDoc, setDoc, doc, collection, addDoc } from "firebase/firestore";
+import { updateDoc, doc } from "firebase/firestore";
 import { selectUser } from "../state/userSlice/user.selectors";
-import { useAppDispatch } from "../hooks/useType";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../hooks/useType";
 import { getUserThunk } from "../state/userSlice/user.thunks";
 import { RawUserData } from "./types/user";
 import { auth, db } from "../firebase";
+import { updateUser } from "../state/userSlice/user.slice";
 
 type Props = {};
 
 // This is a Top-Level Component!
 function Page(prop: Props) {
   const dispatch = useAppDispatch();
-  const userData = useSelector(selectUser);
+  const userData = useAppSelector(selectUser);
 
   // Set User Data
   useEffect(() => {
@@ -29,16 +29,16 @@ function Page(prop: Props) {
     return () => unsubscribe();
   }, [dispatch]);
 
-  async function addData() {
-    // Add Data to firestore
+  async function editUser() {
+    // Update User's firestore Data
     try {
-      const newDoc = await addDoc(collection(db, "users"), {
-        first: "Alan",
-        middle: "Mathison",
-        last: "Turing",
-        born: 1912,
+      if (!userData) throw new Error("userData is null");
+      await updateDoc(doc(db, "users", userData.uid), {
+        name: "Carrum",
       });
-      console.log("Document written with ID: ", newDoc.id);
+      // Update in Redux Too!
+      dispatch(updateUser({ name: "Carrum" }));
+      console.log("Updated Data");
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -48,8 +48,7 @@ function Page(prop: Props) {
     <div>
       <Navbar />
       {userData?.name}
-      {/* <button onClick={() => updateUser()}>Update User</button> */}
-      {/* <button onClick={() => addData()}>Add Firestore Data</button> */}
+      {userData?.name && <button onClick={() => editUser()}>Edit User</button>}
     </div>
   );
 }

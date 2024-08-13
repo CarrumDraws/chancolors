@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { getDoc, setDoc, doc, collection, addDoc } from "firebase/firestore";
+import { getDoc, setDoc, doc } from "firebase/firestore";
 import { UserData, AuthState, RawUserData } from "../../app/types/user";
 import { db } from "../../firebase";
 
@@ -19,7 +19,7 @@ export const getUserThunk = createAsyncThunk<AuthState, RawUserData>(
           name: user.displayName,
           email: user.email,
           photo: user.photoURL,
-          providerId: user.providerData[0]?.providerId ?? null,
+          providerId: user.providerId,
           uid: user.uid,
         } as UserData;
         await setDoc(userDocRef, newUser);

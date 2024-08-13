@@ -16,6 +16,15 @@ export const userSlice = createSlice({
     setUser: (state, action: PayloadAction<UserData>) => {
       state.user = action.payload;
     },
+    // Partial?
+    updateUser: (state, action: PayloadAction<Partial<UserData>>) => {
+      if (state.user) {
+        state.user = {
+          ...state.user,
+          ...action.payload,
+        };
+      }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(
@@ -28,6 +37,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser, updateUser } = userSlice.actions;
 export const getUser = (state: RootState) => state.user; // Export Selector
 export default userSlice.reducer;
