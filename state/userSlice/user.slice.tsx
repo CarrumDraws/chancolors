@@ -1,12 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { getUserThunk } from "./user.thunks";
+import { UserData, AuthState } from "../../app/types/user";
 import type { RootState } from "../store";
-
 // Define a type for the slice state
-export interface UserState {
-  user: Record<string, any> | null;
-}
 
-const initialState: UserState = {
+const initialState: AuthState = {
   user: null,
 };
 
@@ -15,9 +13,18 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     // Use the PayloadAction type to declare the contents of `action.payload`
-    setUser: (state, action: PayloadAction<object | null>) => {
+    setUser: (state, action: PayloadAction<UserData>) => {
       state.user = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(
+      getUserThunk.fulfilled,
+      // PayloadAction = Return Type of Thunk
+      (state, action: PayloadAction<AuthState>) => {
+        state.user = action.payload.user; // Updates the "user" state property with payload data
+      }
+    );
   },
 });
 
