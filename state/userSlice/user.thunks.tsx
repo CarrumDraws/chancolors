@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getDoc, setDoc, doc } from "firebase/firestore";
-import { UserData, AuthState, RawUserData } from "../../app/types/user";
+import { UserData, AuthState, RawUserData } from "../../types/user";
 import { db } from "../../firebase";
 
 // Gets/Sets Google User Data Given Raw FireAuth User

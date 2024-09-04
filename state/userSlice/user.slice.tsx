@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { getUserThunk } from "./user.thunks";
-import { UserData, AuthState } from "../../app/types/user";
+import { UserData, AuthState } from "../../types/user";
 import type { RootState } from "../store";
 // Define a type for the slice state
 
