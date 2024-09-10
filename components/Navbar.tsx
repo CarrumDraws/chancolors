@@ -22,6 +22,7 @@ export default function Navbar() {
   const signIntoApp = async () => {
     try {
       await signIn();
+    
     } catch (error) {
       console.log(error);
     }

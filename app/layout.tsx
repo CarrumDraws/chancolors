@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import ThunkDispatch from "./ThunkDispatch";
 import Navbar from "../components/Navbar";
 import { Provider } from "react-redux";
 import { store } from "../state/store";
@@ -16,6 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Provider store={store}>
+          <ThunkDispatch />
           <Navbar />
           {children}
         </Provider>

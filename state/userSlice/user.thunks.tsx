@@ -13,8 +13,8 @@ export const getUserThunk = createAsyncThunk<AuthState, RawUserData>(
       const userDocRef = doc(db, "users", user.uid); // Create a document reference
       const userDocData = await getDoc(userDocRef); // Get the document snapshot
 
+      // Create New User
       if (!userDocData.exists()) {
-        // Create New User
         const newUser = {
           name: user.displayName,
           email: user.email,
@@ -27,12 +27,10 @@ export const getUserThunk = createAsyncThunk<AuthState, RawUserData>(
         return { user: newUser };
       }
       const userData = userDocData.data() as UserData; // Typecast as UserData
-      console.log("User is Signed In");
       return {
         user: userData,
       };
     } else {
-      console.log("User is Signed Out");
       return {
         user: null,
       };
